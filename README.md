@@ -3,4 +3,6 @@ Based on the original OSHI library this project made in Java using Netbeans is t
 
 The SimpleSystemInfo class makes it easy to manipulate computer information without instantiating an object of type SystemInfo.
 
+Download .jar file: https://github.com/supertsp/oshiOneLib/tree/master/target
+
 Original Project: https://github.com/oshi/oshi

@@ -24,7 +24,7 @@ public class OshiTests {
 //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[1] + " " +
 //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[2] + " " +
 //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[3] + " "
-                    SimpleSystemInfo.getOsBuildVersion() + " "
+                    SimpleSystemInfo.getMemoryCapacityAsString() + " "
             );
             
             Util.sleep(100);

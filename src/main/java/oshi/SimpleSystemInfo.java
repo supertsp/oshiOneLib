@@ -1,6 +1,8 @@
 package oshi;
 
 // <editor-fold defaultstate="collapsed" desc="imports...">
+import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
+import com.sun.jna.platform.win32.WinNT.OSVERSIONINFO;
 import java.util.*;
 import oshi.*;
 import oshi.data.windows.*;
@@ -88,32 +90,41 @@ public class SimpleSystemInfo {
     public static String getOsManufacturer() {
         return getOs().getManufacturer();
     }
-
-    private static String[] getOsVersionDescription() {
-        arrayString = getOs().getVersion().toString().split(" ");
-        return arrayString;
-    }
-
-    public static String getOsVersion() {
-        return getOsVersionDescription()[0];
-    }
     
-    public static String getOsBuildVersion(){
-        return getOsVersionDescription()[3];
+    public static String getOsVersion() {
+        return getOs().getVersion().getVersion() + " " + getOs().getVersion().getCodeName();
+    }
+
+    public static String getOsBuildVersion() {
+        return getOs().getVersion().getBuildNumber();
+    }
+
+    public static String getOsSystemType() {
+        //full list
+//        System.getProperties().list(System.out);        
+        return System.getProperty("os.arch");
     }
     // </editor-fold>  
 
     // <editor-fold defaultstate="collapsed" desc="CPU Methods">
-    public static String getCpuManufacturer(){
+    public static String getCpuManufacturer() {
         arrayString = getCpu().getName().split(" ");
         return arrayString[0];
     }
-    
-    public static String getCpuModel(){
+
+    public static String getCpuModel() {
         arrayString = getCpu().getName().split(" ");
         return arrayString[2];
     }
     
+    public static int getCpuNumberOfCores(){
+        return getCpu().getPhysicalProcessorCount();
+    }
+    
+    public static int getCpuNumberOfLogicalCores(){
+        return getCpu().getLogicalProcessorCount();
+    }
+
     public static String getCpuUsedPercentageAsString() {
         prevTicks = getCpu().getSystemCpuLoadTicks();
         Util.sleep(100);
@@ -204,14 +215,14 @@ public class SimpleSystemInfo {
     public static double getCpuCoreUsedPercentageAsDouble(int indexOfCore) {
         return getCpuCoreUsedPercentageAsDouble()[indexOfCore];
     }
-    
+
     public static double getCpuVendorFrequencyAsDouble() {
         singleString = getCpuCurrentFrequencyAsString();
         singleString = singleString.substring(0, (singleString.length() - 4));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
-    
+
     public static double getCpuCurrentFrequencyAsDouble() {
         singleString = getCpuCurrentFrequencyAsString();
         singleString = singleString.substring(0, (singleString.length() - 4));
@@ -231,9 +242,30 @@ public class SimpleSystemInfo {
         return arrayDoubleValues;
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="RAM Methods">
-
+    public static String getMemoryCapacityAsString(){
+        return FormatUtil.formatBytes(getMemory().getTotal());
+    }
+    
+    public static String getMemoryUsedAsString(){
+        getMemory().updateAttributes();
+        return FormatUtil.formatBytes(getMemory().getTotal() - getMemory().getAvailable());
+    }
+            
+    public static String getMemoryUsedPercentageAsString() {
+        singleDouble = ((double)(getMemory().getTotal() - getMemory().getAvailable()) / (double)getMemory().getTotal()) * 100.0;
+        return String.format("%.2f%%", singleDouble);
+    }
+    
+    //--- DOUBLE 
+    public static double getMemoryCapacityAsDouble(){
+        singleString = getMemoryCapacityAsString();
+        singleString = singleString.substring(0, (singleString.length() - 1));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
+    
+    
     // </editor-fold>
-
 }

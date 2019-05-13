@@ -76,7 +76,11 @@ public class SimpleSystemInfo {
     public static GlobalMemory getMemory() {
         return getHardware().getMemory();
     }
-
+    
+    public static HWDiskStore[] getDisks(){
+        return getHardware().getDiskStores();
+    }
+        
     public static UsbDevice[] getUsbDevices(boolean showDevicesTree) {
         return getHardware().getUsbDevices(showDevicesTree);
     }
@@ -99,7 +103,7 @@ public class SimpleSystemInfo {
         return getOs().getVersion().getBuildNumber();
     }
 
-    public static String getOsSystemType() {
+    public static String getOsSystemTypeArchitecture() {
         //full list
 //        System.getProperties().list(System.out);        
         return System.getProperty("os.arch");
@@ -261,11 +265,109 @@ public class SimpleSystemInfo {
     //--- DOUBLE 
     public static double getMemoryCapacityAsDouble(){
         singleString = getMemoryCapacityAsString();
-        singleString = singleString.substring(0, (singleString.length() - 1));
+        singleString = singleString.substring(0, (singleString.length() - 3));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
     
+    public static double getMemoryUsedAsDouble(){
+        singleString = getMemoryUsedAsString();
+        singleString = singleString.substring(0, (singleString.length() - 3));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
     
+    public static double getMemoryUsedPercentageAsDouble() {
+        singleString = getMemoryUsedPercentageAsString();
+        singleString = singleString.substring(0, (singleString.length() - 1));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
     // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Virtual Memory Methods">
+    public static String getVirtualMemoryCapacityAsString(){
+        return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapTotal());
+    }
+    
+    public static String getVirtualMemoryUsedAsString(){
+        getMemory().updateAttributes();
+        return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapUsed());
+    }
+            
+    public static String getVirtualMemoryUsedPercentageAsString() {
+        singleDouble = ((double)(getMemory().getVirtualMemory().getSwapUsed()) / (double)getMemory().getVirtualMemory().getSwapTotal()) * 100.0;
+        return String.format("%.2f%%", singleDouble);
+    }
+    
+    //--- DOUBLE 
+    public static double getVirtualMemoryCapacityAsDouble(){
+        singleString = getVirtualMemoryCapacityAsString();
+        singleString = singleString.substring(0, (singleString.length() - 3));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
+    
+    public static double getVirtualMemoryUsedAsDouble(){
+        singleString = getVirtualMemoryUsedAsString();
+        singleString = singleString.substring(0, (singleString.length() - 3));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
+    
+    public static double getVirtualMemoryUsedPercentageAsDouble() {
+        singleString = getVirtualMemoryUsedPercentageAsString();
+        singleString = singleString.substring(0, (singleString.length() - 1));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Disk Methods">
+    public static String[] getDisksManufacturer(){
+        arrayString = new String[getDisks().length];
+        for (int count = 0; count < arrayString.length; count++) {
+            singleString = getDisks()[count].getModel();
+            arrayString[count] = singleString.split(" ")[0];
+        }
+        return arrayString;
+    }
+    
+    public static String getDisksCapacityAsString(){
+        return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapTotal());
+    }
+    
+    public static String getDisksUsedAsString(){
+        getMemory().updateAttributes();
+        return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapUsed());
+    }
+            
+    public static String getDisksUsedPercentageAsString() {
+        singleDouble = ((double)(getMemory().getVirtualMemory().getSwapUsed()) / (double)getMemory().getVirtualMemory().getSwapTotal()) * 100.0;
+        return String.format("%.2f%%", singleDouble);
+    }
+    
+    //--- DOUBLE 
+    public static double getDisksCapacityAsDouble(){
+        singleString = getDisksCapacityAsString();
+        singleString = singleString.substring(0, (singleString.length() - 3));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
+    
+    public static double getDiskUsedAsDouble(){
+        singleString = getDisksUsedAsString();
+        singleString = singleString.substring(0, (singleString.length() - 3));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
+    
+    public static double getDisksUsedPercentageAsDouble() {
+        singleString = getDisksUsedPercentageAsString();
+        singleString = singleString.substring(0, (singleString.length() - 1));
+        singleString = singleString.replace(',', '.');
+        return Double.parseDouble(singleString);
+    }
+    // </editor-fold>
+    
 }

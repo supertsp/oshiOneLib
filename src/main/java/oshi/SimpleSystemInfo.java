@@ -39,6 +39,7 @@ public class SimpleSystemInfo {
 
     private static String singleString;
     private static String[] arrayString;
+    private static String[] arrayString2;
 
     private static long singleLong;
     private static long[] arrayLongValues;
@@ -76,11 +77,11 @@ public class SimpleSystemInfo {
     public static GlobalMemory getMemory() {
         return getHardware().getMemory();
     }
-    
-    public static HWDiskStore[] getDisks(){
+
+    public static HWDiskStore[] getDisks() {
         return getHardware().getDiskStores();
     }
-        
+
     public static UsbDevice[] getUsbDevices(boolean showDevicesTree) {
         return getHardware().getUsbDevices(showDevicesTree);
     }
@@ -94,7 +95,7 @@ public class SimpleSystemInfo {
     public static String getOsManufacturer() {
         return getOs().getManufacturer();
     }
-    
+
     public static String getOsVersion() {
         return getOs().getVersion().getVersion() + " " + getOs().getVersion().getCodeName();
     }
@@ -120,12 +121,12 @@ public class SimpleSystemInfo {
         arrayString = getCpu().getName().split(" ");
         return arrayString[2];
     }
-    
-    public static int getCpuNumberOfCores(){
+
+    public static int getCpuNumberOfCores() {
         return getCpu().getPhysicalProcessorCount();
     }
-    
-    public static int getCpuNumberOfLogicalCores(){
+
+    public static int getCpuNumberOfLogicalCores() {
         return getCpu().getLogicalProcessorCount();
     }
 
@@ -248,35 +249,35 @@ public class SimpleSystemInfo {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="RAM Methods">
-    public static String getMemoryCapacityAsString(){
+    public static String getMemoryCapacityAsString() {
         return FormatUtil.formatBytes(getMemory().getTotal());
     }
-    
-    public static String getMemoryUsedAsString(){
+
+    public static String getMemoryUsedAsString() {
         getMemory().updateAttributes();
         return FormatUtil.formatBytes(getMemory().getTotal() - getMemory().getAvailable());
     }
-            
+
     public static String getMemoryUsedPercentageAsString() {
-        singleDouble = ((double)(getMemory().getTotal() - getMemory().getAvailable()) / (double)getMemory().getTotal()) * 100.0;
+        singleDouble = ((double) (getMemory().getTotal() - getMemory().getAvailable()) / (double) getMemory().getTotal()) * 100.0;
         return String.format("%.2f%%", singleDouble);
     }
-    
+
     //--- DOUBLE 
-    public static double getMemoryCapacityAsDouble(){
+    public static double getMemoryCapacityAsDouble() {
         singleString = getMemoryCapacityAsString();
         singleString = singleString.substring(0, (singleString.length() - 3));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
-    
-    public static double getMemoryUsedAsDouble(){
+
+    public static double getMemoryUsedAsDouble() {
         singleString = getMemoryUsedAsString();
         singleString = singleString.substring(0, (singleString.length() - 3));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
-    
+
     public static double getMemoryUsedPercentageAsDouble() {
         singleString = getMemoryUsedPercentageAsString();
         singleString = singleString.substring(0, (singleString.length() - 1));
@@ -284,37 +285,37 @@ public class SimpleSystemInfo {
         return Double.parseDouble(singleString);
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Virtual Memory Methods">
-    public static String getVirtualMemoryCapacityAsString(){
+    public static String getVirtualMemoryCapacityAsString() {
         return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapTotal());
     }
-    
-    public static String getVirtualMemoryUsedAsString(){
+
+    public static String getVirtualMemoryUsedAsString() {
         getMemory().updateAttributes();
         return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapUsed());
     }
-            
+
     public static String getVirtualMemoryUsedPercentageAsString() {
-        singleDouble = ((double)(getMemory().getVirtualMemory().getSwapUsed()) / (double)getMemory().getVirtualMemory().getSwapTotal()) * 100.0;
+        singleDouble = ((double) (getMemory().getVirtualMemory().getSwapUsed()) / (double) getMemory().getVirtualMemory().getSwapTotal()) * 100.0;
         return String.format("%.2f%%", singleDouble);
     }
-    
+
     //--- DOUBLE 
-    public static double getVirtualMemoryCapacityAsDouble(){
+    public static double getVirtualMemoryCapacityAsDouble() {
         singleString = getVirtualMemoryCapacityAsString();
         singleString = singleString.substring(0, (singleString.length() - 3));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
-    
-    public static double getVirtualMemoryUsedAsDouble(){
+
+    public static double getVirtualMemoryUsedAsDouble() {
         singleString = getVirtualMemoryUsedAsString();
         singleString = singleString.substring(0, (singleString.length() - 3));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
-    
+
     public static double getVirtualMemoryUsedPercentageAsDouble() {
         singleString = getVirtualMemoryUsedPercentageAsString();
         singleString = singleString.substring(0, (singleString.length() - 1));
@@ -322,52 +323,111 @@ public class SimpleSystemInfo {
         return Double.parseDouble(singleString);
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Disk Methods">
-    public static String[] getDisksManufacturer(){
+    public static String[] getDisksManufacturer() {
         arrayString = new String[getDisks().length];
         for (int count = 0; count < arrayString.length; count++) {
             singleString = getDisks()[count].getModel();
-            arrayString[count] = singleString.split(" ")[0];
+            arrayString2 = singleString.split(" ");
+            arrayString[count] = arrayString2[0];
         }
         return arrayString;
     }
-    
-    public static String getDisksCapacityAsString(){
-        return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapTotal());
+
+    public static String[] getDisksModel() {
+        arrayString = new String[getDisks().length];
+        for (int count = 0; count < arrayString.length; count++) {
+            singleString = getDisks()[count].getModel();
+            arrayString2 = singleString.split(" ");
+
+            if (arrayString2.length >= 3) {
+                arrayString[count] = arrayString2[1];
+            } else {
+                arrayString[count] = arrayString2[0];
+            }
+
+        }
+        return arrayString;
     }
-    
-    public static String getDisksUsedAsString(){
-        getMemory().updateAttributes();
-        return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapUsed());
+
+    public static String[] getDisksCapacityAsString() {
+        OSFileStore[] fsArray = getOs().getFileSystem().getFileStores();
+        arrayString = new String[fsArray.length];
+
+        for (int count = 0; count < fsArray.length; count++) {
+            arrayString[count] = FormatUtil.formatBytes(fsArray[count].getTotalSpace());
+        }
+
+        return arrayString;
     }
-            
-    public static String getDisksUsedPercentageAsString() {
-        singleDouble = ((double)(getMemory().getVirtualMemory().getSwapUsed()) / (double)getMemory().getVirtualMemory().getSwapTotal()) * 100.0;
-        return String.format("%.2f%%", singleDouble);
+
+    public static String[] getDisksUsedAsString() {
+        OSFileStore[] fsArray = getOs().getFileSystem().getFileStores();
+        arrayString = new String[fsArray.length];
+
+        for (int count = 0; count < fsArray.length; count++) {
+            arrayString[count] = FormatUtil.formatBytes(fsArray[count].getTotalSpace() - fsArray[count].getUsableSpace());
+        }
+
+        return arrayString;
     }
-    
+
+    public static String[] getDisksUsedPercentageAsString() {
+        OSFileStore[] fsArray = getOs().getFileSystem().getFileStores();
+        arrayString = new String[fsArray.length];
+
+        for (int count = 0; count < fsArray.length; count++) {
+            singleDouble = ((double) (fsArray[count].getTotalSpace() - fsArray[count].getUsableSpace()) / (double) fsArray[count].getTotalSpace()) * 100.0;
+            arrayString[count] = String.format("%.2f%%", singleDouble);
+        }
+
+        return arrayString;
+    }
+
     //--- DOUBLE 
-    public static double getDisksCapacityAsDouble(){
-        singleString = getDisksCapacityAsString();
-        singleString = singleString.substring(0, (singleString.length() - 3));
-        singleString = singleString.replace(',', '.');
-        return Double.parseDouble(singleString);
+    public static double[] getDisksCapacityAsDouble() {
+        arrayString = getDisksCapacityAsString();
+        arrayDoubleValues = new double[arrayString.length];
+
+        for (int count = 0; count < arrayString.length; count++) {
+            if (arrayString[count].equalsIgnoreCase("0 bytes")) {
+                arrayDoubleValues[count] = 0;
+            } else {
+                singleString = arrayString[count].substring(0, (arrayString[count].length() - 4));
+                singleString = singleString.replace(',', '.');
+                arrayDoubleValues[count] = Double.parseDouble(singleString);
+            }
+
+        }
+
+        return arrayDoubleValues;
     }
-    
-    public static double getDiskUsedAsDouble(){
-        singleString = getDisksUsedAsString();
-        singleString = singleString.substring(0, (singleString.length() - 3));
-        singleString = singleString.replace(',', '.');
-        return Double.parseDouble(singleString);
+
+    public static double[] getDisksUsedAsDouble() {
+        arrayString = getDisksUsedAsString();
+        arrayDoubleValues = new double[arrayString.length];
+
+        for (int count = 0; count < arrayString.length; count++) {
+            if (arrayString[count].equalsIgnoreCase("0 bytes")) {
+                arrayDoubleValues[count] = 0;
+            } else {
+                singleString = arrayString[count].substring(0, (arrayString[count].length() - 4));
+                singleString = singleString.replace(',', '.');
+                arrayDoubleValues[count] = Double.parseDouble(singleString);
+            }
+
+        }
+
+        return arrayDoubleValues;
     }
-    
+
     public static double getDisksUsedPercentageAsDouble() {
-        singleString = getDisksUsedPercentageAsString();
+//        singleString = getDisksUsedPercentageAsString();
         singleString = singleString.substring(0, (singleString.length() - 1));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
     // </editor-fold>
-    
+
 }

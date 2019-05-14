@@ -3,6 +3,8 @@ package oshi;
 // <editor-fold defaultstate="collapsed" desc="imports...">
 import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import com.sun.jna.platform.win32.WinNT.OSVERSIONINFO;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.*;
 import oshi.*;
 import oshi.data.windows.*;
@@ -84,6 +86,10 @@ public class SimpleSystemInfo {
 
     public static UsbDevice[] getUsbDevices(boolean showDevicesTree) {
         return getHardware().getUsbDevices(showDevicesTree);
+    }
+
+    public static String getCurrentUserName() {
+        return System.getenv("USERNAME");
     }
     // </editor-fold>  
 
@@ -249,6 +255,37 @@ public class SimpleSystemInfo {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="RAM Methods">
+    public static String getMemoryManufacturer(){
+        String data = "";
+        String temp = "";
+
+        String[][] commands = new String[][]{ {"CMD", "/C", "WMIC memorychip GET Manufacturer"} };
+        try {
+            for (int i = 0; i < commands.length; i++) {
+                String[] com = commands[i];
+                Process process = Runtime.getRuntime().exec(com);
+                
+                //Closing output stream of the process
+                process.getOutputStream().close();
+
+                //Reading sucessful output of the command
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String s;
+                
+                while ((s = reader.readLine()) != null) {
+                    temp = s.trim();                    
+                    if (!temp.equalsIgnoreCase("Manufacturer") && !data.equalsIgnoreCase(temp)) {
+                        data += temp;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return data;
+    }
+    
     public static String getMemoryCapacityAsString() {
         return FormatUtil.formatBytes(getMemory().getTotal());
     }
@@ -367,7 +404,11 @@ public class SimpleSystemInfo {
         arrayString = new String[fsArray.length];
 
         for (int count = 0; count < fsArray.length; count++) {
-            arrayString[count] = FormatUtil.formatBytes(fsArray[count].getTotalSpace() - fsArray[count].getUsableSpace());
+            if (fsArray[count].getTotalSpace() > 0) {
+                arrayString[count] = FormatUtil.formatBytes(fsArray[count].getTotalSpace() - fsArray[count].getUsableSpace());
+            } else {
+                arrayString[count] = FormatUtil.formatBytes(0);
+            }
         }
 
         return arrayString;
@@ -378,8 +419,12 @@ public class SimpleSystemInfo {
         arrayString = new String[fsArray.length];
 
         for (int count = 0; count < fsArray.length; count++) {
-            singleDouble = ((double) (fsArray[count].getTotalSpace() - fsArray[count].getUsableSpace()) / (double) fsArray[count].getTotalSpace()) * 100.0;
-            arrayString[count] = String.format("%.2f%%", singleDouble);
+            if (fsArray[count].getTotalSpace() > 0) {
+                singleDouble = ((double) (fsArray[count].getTotalSpace() - fsArray[count].getUsableSpace()) / (double) fsArray[count].getTotalSpace()) * 100.0;
+                arrayString[count] = String.format("%.2f%%", singleDouble);
+            } else {
+                arrayString[count] = String.format("%.2f%%", 0.0);
+            }
         }
 
         return arrayString;
@@ -422,11 +467,22 @@ public class SimpleSystemInfo {
         return arrayDoubleValues;
     }
 
-    public static double getDisksUsedPercentageAsDouble() {
-//        singleString = getDisksUsedPercentageAsString();
-        singleString = singleString.substring(0, (singleString.length() - 1));
-        singleString = singleString.replace(',', '.');
-        return Double.parseDouble(singleString);
+    public static double[] getDisksUsedPercentageAsDouble() {
+        arrayString = getDisksUsedPercentageAsString();
+        arrayDoubleValues = new double[arrayString.length];
+
+        for (int count = 0; count < arrayString.length; count++) {
+            if (arrayString[count].equalsIgnoreCase("NaN%")) {
+                arrayDoubleValues[count] = 0;
+            } else {
+                singleString = arrayString[count].substring(0, (arrayString[count].length() - 1));
+                singleString = singleString.replace(',', '.');
+                arrayDoubleValues[count] = Double.parseDouble(singleString);
+            }
+
+        }
+
+        return arrayDoubleValues;
     }
     // </editor-fold>
 

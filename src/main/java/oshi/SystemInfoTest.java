@@ -294,15 +294,20 @@ public class SystemInfoTest {
     private static void printProcesses(OperatingSystem os, GlobalMemory memory) {
         System.out.println("Processes: " + os.getProcessCount() + ", Threads: " + os.getThreadCount());
         // Sort by highest CPU
-        List<OSProcess> procs = Arrays.asList(os.getProcesses(5, ProcessSort.CPU));
-
-        System.out.println("   PID  %CPU %MEM       VSZ       RSS Name");
+        List<OSProcess> procs = Arrays.asList(os.getProcesses(5, ProcessSort.MEMORY));
+        
+        //                     0      1   2          3         4
+        System.out.println("   PID  %CPU %MEM       VSZ       RSS    Name");
         for (int i = 0; i < procs.size() && i < 5; i++) {
             OSProcess p = procs.get(i);
-            System.out.format(" %5d %5.1f %4.1f %9s %9s %s%n", p.getProcessID(),
-                    100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
-                    100d * p.getResidentSetSize() / memory.getTotal(), FormatUtil.formatBytes(p.getVirtualSize()),
-                    FormatUtil.formatBytes(p.getResidentSetSize()), p.getName());
+            System.out.format(" %5d %5.1f %4.1f %9s %9s %s   %n",
+                    /*0*/ p.getProcessID(),
+                    /*1*/ 100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
+                    /*2*/ 100d * p.getResidentSetSize() / memory.getTotal(),
+                    /*3*/ FormatUtil.formatBytes(p.getVirtualSize()),
+                    /*4*/ FormatUtil.formatBytes(p.getResidentSetSize()),
+                    /*5*/ p.getName()
+            );
         }
     }
 

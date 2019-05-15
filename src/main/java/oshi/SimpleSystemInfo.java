@@ -42,6 +42,7 @@ public class SimpleSystemInfo {
     private static String singleString;
     private static String[] arrayString;
     private static String[] arrayString2;
+    private static String[][] arrayStringTable;
 
     private static long singleLong;
     private static long[] arrayLongValues;
@@ -72,8 +73,12 @@ public class SimpleSystemInfo {
         return getHardware().getNetworkIFs();
     }
 
-    public static OSProcess getProcess(int processID) {
-        return getOs().getProcess(processID);
+    public static OSProcess[] getProcesses() {
+        return getOs().getProcesses(0, OperatingSystem.ProcessSort.MEMORY);
+    }
+    
+    public static OSProcess[] getProcesses(int numberOfProcesses) {
+        return getOs().getProcesses(numberOfProcesses, OperatingSystem.ProcessSort.MEMORY);
     }
 
     public static GlobalMemory getMemory() {
@@ -483,6 +488,32 @@ public class SimpleSystemInfo {
         }
 
         return arrayDoubleValues;
+    }
+    // </editor-fold>
+        
+    // <editor-fold defaultstate="collapsed" desc="Processes Methods">
+    public static String[][] getProcessesWithHeaderAsStringTable(){
+        //order: [0] Name    [1] PID    [2] Using %CPU     [3] Using RAM    [4] Using %RAM 
+        arrayStringTable = new String[getOs().getProcessCount() + 1][5]; 
+        arrayString = new String[getOs().getProcessCount() + 1];
+        
+        arrayStringTable[0][0] = "Name";
+        arrayStringTable[0][1] = "PID";
+        arrayStringTable[0][2] = "Using %CPU";
+        arrayStringTable[0][3] = "Using RAM";
+        arrayStringTable[0][4] = "Using %RAM";
+        
+        OSProcess[] procs = getProcesses();
+        
+        for (int count = 1; count < arrayString.length; count++) {
+            arrayStringTable[count][0] = procs[count - 1].getName();
+            arrayStringTable[count][1] = String.valueOf(procs[count - 1].getProcessID());
+            arrayStringTable[count][2] = String.format("%.2f%%", 100d * (procs[count - 1].getKernelTime() + procs[count - 1].getUserTime()) / procs[count - 1].getUpTime() );
+            arrayStringTable[count][3] = FormatUtil.formatBytes( procs[count - 1].getResidentSetSize() );
+            arrayStringTable[count][4] = String.format("%.2f%%",  100d * procs[count - 1].getResidentSetSize() / getMemory().getTotal() );
+        }
+        
+        return arrayStringTable;
     }
     // </editor-fold>
 

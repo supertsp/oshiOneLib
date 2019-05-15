@@ -18,6 +18,7 @@ public class OshiTests {
 //        }
 //        System.out.println();
 //        for (int i = 0; i < 10_000; i++) {
+        for (int i = 0; i < 1; i++) {
 //            System.out.println(
 //                    //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[0] + " " +
 //                    //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[1] + " " +
@@ -27,17 +28,17 @@ public class OshiTests {
 //            //                    SimpleSystemInfo.getVirtualMemoryUsedAsString() + " "
 //            );
 //
-////            for (File f : File.listRoots()) {
-////                System.out.println(f);
-////            }
+            for (String[] item : SimpleSystemInfo.getProcessesWithHeaderAsStringTable()) {
+                System.out.println(item[0].substring(0, item[0].length() > 7 ? 7 : item[0].length()) + "\t\t" + item[1] + "\t\t" + item[2] + "\t\t" + item[3] + "\t\t" + item[4]);
+            }
 //            
 //            
 //            
 //            
-//            Util.sleep(100);
-//        }
+            Util.sleep(100);
+        }
         
-        System.out.println(SimpleSystemInfo.getMemoryManufacturer());
+//        System.out.println("##"+SimpleSystemInfo.getMemoryManufacturer()+"##");
         
         System.out.println("\n\n\n");
     }

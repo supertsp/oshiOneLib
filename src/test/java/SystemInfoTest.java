@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package oshi;
+
 
 //import static org.junit.Assert.assertFalse;
+import oshi.*;
 import java.util.Arrays;
 import java.util.List;
 

@@ -75,13 +75,10 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="cpuPC3" alignment="0" pref="161" max="32767" attributes="0"/>
-                                  <Component id="cpuPC8" alignment="0" pref="161" max="32767" attributes="0"/>
-                                  <Component id="cpuPC1" alignment="0" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="cpuPC3" alignment="0" max="32767" attributes="0"/>
+                              <Component id="cpuPC8" alignment="0" max="32767" attributes="0"/>
+                              <Component id="cpuPC1" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -91,11 +88,11 @@
                               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="diskPC2" max="32767" attributes="0"/>
-                                  <Component id="cpuPC12" pref="62" max="32767" attributes="0"/>
+                                  <Component id="cpuPC12" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="128" max="32767" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="cpuPC2" pref="161" max="32767" attributes="0"/>
                           <Component id="cpuPC11" alignment="0" pref="161" max="32767" attributes="0"/>

@@ -41,7 +41,7 @@ public class SimpleSystemInfo {
 
     private static SystemInfo systemInfo = new SystemInfo();
 
-    private static final int TIME_INTERVAL = 800;
+    public static int intervalTimeBetweenEachMeasurement = 400;
 
     private static String singleString;
     private static String[] arrayString;
@@ -148,7 +148,7 @@ public class SimpleSystemInfo {
 
     public static String getCpuUsedPercentageAsString() {
         prevTicks = getCpu().getSystemCpuLoadTicks();
-        Util.sleep(TIME_INTERVAL);
+        Util.sleep(intervalTimeBetweenEachMeasurement);
         getCpu().updateAttributes();
         singleDouble = getCpu().getSystemCpuLoadBetweenTicks(prevTicks) * 100;
         singleDouble = singleDouble < 0 ? 0 : singleDouble;
@@ -157,7 +157,7 @@ public class SimpleSystemInfo {
 
     public static String[] getCpuCoreUsedPercentageAsString() {
         prevProcTicks = getCpu().getProcessorCpuLoadTicks();
-        Util.sleep(TIME_INTERVAL);
+        Util.sleep(intervalTimeBetweenEachMeasurement);
         getCpu().updateAttributes();
         double[] load = getCpu().getProcessorCpuLoadBetweenTicks(prevProcTicks);
         arrayString = new String[load.length];
@@ -182,7 +182,7 @@ public class SimpleSystemInfo {
     }
 
     public static String getCpuCurrentFrequencyAsString() {
-        Util.sleep(TIME_INTERVAL);
+        Util.sleep(intervalTimeBetweenEachMeasurement);
         getCpu().updateAttributes();
         arrayLongValues = getCpu().getCurrentFreq();
 
@@ -199,7 +199,7 @@ public class SimpleSystemInfo {
     }
 
     public static String[] getCpuCoreCurrentFrequencyAsString() {
-        Util.sleep(TIME_INTERVAL);
+        Util.sleep(intervalTimeBetweenEachMeasurement);
         getCpu().updateAttributes();
         arrayLongValues = getCpu().getCurrentFreq();
         arrayString = null;
@@ -300,13 +300,13 @@ public class SimpleSystemInfo {
     }
 
     public static String getMemoryUsedAsString() {
-        Util.sleep(TIME_INTERVAL);
+        Util.sleep(intervalTimeBetweenEachMeasurement);
         getMemory().updateAttributes();
         return FormatUtil.formatBytes(getMemory().getTotal() - getMemory().getAvailable());
     }
 
     public static String getMemoryUsedPercentageAsString() {
-        Util.sleep(TIME_INTERVAL);
+        Util.sleep(intervalTimeBetweenEachMeasurement);
         singleDouble = ((double) (getMemory().getTotal() - getMemory().getAvailable()) / (double) getMemory().getTotal()) * 100.0;
         singleDouble = singleDouble < 0 ? 0 : singleDouble;
         return decimalFormat.format(singleDouble);
@@ -350,7 +350,7 @@ public class SimpleSystemInfo {
     }
 
     public static String getVirtualMemoryUsedAsString() {
-        Util.sleep(TIME_INTERVAL);
+        Util.sleep(intervalTimeBetweenEachMeasurement);
         getMemory().updateAttributes();
         return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapUsed());
     }

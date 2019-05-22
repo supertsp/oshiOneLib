@@ -522,6 +522,14 @@ public class SimpleSystemInfo {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Processes Methods">
+    public static int getProcessesNumber(){
+        return getOs().getProcessCount();
+    }
+    
+    public static int getProcessesThreadNumber(){
+        return getOs().getThreadCount();
+    }
+    
     public static String[][] getProcessesWithHeaderAsStringTable() {
         //order: [0] Name    [1] PID    [2] Using %CPU     [3] Using RAM    [4] Using %RAM 
         arrayStringTable = new String[getOs().getProcessCount() + 1][5];

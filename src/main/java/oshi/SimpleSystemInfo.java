@@ -101,6 +101,10 @@ public class SimpleSystemInfo {
     public static String getCurrentUserName() {
         return System.getenv("USERNAME");
     }
+    
+    public static PlatformEnum getPlatformOs(){
+        return SystemInfo.getCurrentPlatformEnum();
+    }
     // </editor-fold>  
 
     // <editor-fold defaultstate="collapsed" desc="OS Methods">   

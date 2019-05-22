@@ -5,6 +5,8 @@ import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import com.sun.jna.platform.win32.WinNT.OSVERSIONINFO;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 import oshi.*;
 import oshi.data.windows.*;
@@ -39,6 +41,8 @@ public class SimpleSystemInfo {
 
     private static SystemInfo systemInfo = new SystemInfo();
 
+    private static final int TIME_INTERVAL = 800;
+
     private static String singleString;
     private static String[] arrayString;
     private static String[] arrayString2;
@@ -49,6 +53,7 @@ public class SimpleSystemInfo {
     private static long[] prevTicks;
     private static long[][] prevProcTicks;
 
+    private static DecimalFormat decimalFormat = new DecimalFormat("###0.00");
     private static double singleDouble;
     private static double[] arrayDoubleValues;
 
@@ -143,22 +148,23 @@ public class SimpleSystemInfo {
 
     public static String getCpuUsedPercentageAsString() {
         prevTicks = getCpu().getSystemCpuLoadTicks();
-        Util.sleep(100);
+        Util.sleep(TIME_INTERVAL);
         getCpu().updateAttributes();
-        return String.format(
-                "%.2f%%",
-                (getCpu().getSystemCpuLoadBetweenTicks(prevTicks) * 100)
-        );
+        singleDouble = getCpu().getSystemCpuLoadBetweenTicks(prevTicks) * 100;
+        singleDouble = singleDouble < 0 ? 0 : singleDouble;
+        return decimalFormat.format(singleDouble);
     }
 
     public static String[] getCpuCoreUsedPercentageAsString() {
         prevProcTicks = getCpu().getProcessorCpuLoadTicks();
-        Util.sleep(100);
+        Util.sleep(TIME_INTERVAL);
         getCpu().updateAttributes();
         double[] load = getCpu().getProcessorCpuLoadBetweenTicks(prevProcTicks);
         arrayString = new String[load.length];
         for (int count = 0; count < load.length; count++) {
-            arrayString[count] = String.format(" %.2f%%", (load[count] * 100));
+            singleDouble = (load[count] * 100);
+            singleDouble = singleDouble < 0 ? 0 : singleDouble;
+            arrayString[count] = decimalFormat.format(singleDouble);
         }
         return arrayString;
     }
@@ -176,7 +182,7 @@ public class SimpleSystemInfo {
     }
 
     public static String getCpuCurrentFrequencyAsString() {
-        Util.sleep(100);
+        Util.sleep(TIME_INTERVAL);
         getCpu().updateAttributes();
         arrayLongValues = getCpu().getCurrentFreq();
 
@@ -193,7 +199,7 @@ public class SimpleSystemInfo {
     }
 
     public static String[] getCpuCoreCurrentFrequencyAsString() {
-        Util.sleep(100);
+        Util.sleep(TIME_INTERVAL);
         getCpu().updateAttributes();
         arrayLongValues = getCpu().getCurrentFreq();
         arrayString = null;
@@ -211,7 +217,6 @@ public class SimpleSystemInfo {
     //--- DOUBLE 
     public static double getCpuUsedPercentageAsDouble() {
         singleString = getCpuUsedPercentageAsString();
-        singleString = singleString.substring(0, (singleString.length() - 1));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
@@ -221,7 +226,6 @@ public class SimpleSystemInfo {
         arrayDoubleValues = new double[arrayString.length];
         for (int count = 0; count < arrayString.length; count++) {
             singleString = arrayString[count];
-            singleString = singleString.substring(0, (singleString.length() - 1));
             singleString = singleString.replace(',', '.');
             arrayDoubleValues[count] = Double.parseDouble(singleString);
         }
@@ -296,33 +300,45 @@ public class SimpleSystemInfo {
     }
 
     public static String getMemoryUsedAsString() {
+        Util.sleep(TIME_INTERVAL);
         getMemory().updateAttributes();
         return FormatUtil.formatBytes(getMemory().getTotal() - getMemory().getAvailable());
     }
 
     public static String getMemoryUsedPercentageAsString() {
+        Util.sleep(TIME_INTERVAL);
         singleDouble = ((double) (getMemory().getTotal() - getMemory().getAvailable()) / (double) getMemory().getTotal()) * 100.0;
-        return String.format("%.2f%%", singleDouble);
+        singleDouble = singleDouble < 0 ? 0 : singleDouble;
+        return decimalFormat.format(singleDouble);
     }
 
     //--- DOUBLE 
     public static double getMemoryCapacityAsDouble() {
         singleString = getMemoryCapacityAsString();
-        singleString = singleString.substring(0, (singleString.length() - 3));
-        singleString = singleString.replace(',', '.');
-        return Double.parseDouble(singleString);
+
+        if (singleString.equalsIgnoreCase("0 bytes")) {
+            return 0.0;
+        } else {
+            singleString = singleString.substring(0, (singleString.length() - 3));
+            singleString = singleString.replace(',', '.');
+            return Double.parseDouble(singleString);
+        }
     }
 
     public static double getMemoryUsedAsDouble() {
         singleString = getMemoryUsedAsString();
-        singleString = singleString.substring(0, (singleString.length() - 3));
-        singleString = singleString.replace(',', '.');
-        return Double.parseDouble(singleString);
+
+        if (singleString.equalsIgnoreCase("0 bytes")) {
+            return 0.0;
+        } else {
+            singleString = singleString.substring(0, (singleString.length() - 3));
+            singleString = singleString.replace(',', '.');
+            return Double.parseDouble(singleString);
+        }
     }
 
     public static double getMemoryUsedPercentageAsDouble() {
         singleString = getMemoryUsedPercentageAsString();
-        singleString = singleString.substring(0, (singleString.length() - 1));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
@@ -334,33 +350,43 @@ public class SimpleSystemInfo {
     }
 
     public static String getVirtualMemoryUsedAsString() {
+        Util.sleep(TIME_INTERVAL);
         getMemory().updateAttributes();
         return FormatUtil.formatBytes(getMemory().getVirtualMemory().getSwapUsed());
     }
 
     public static String getVirtualMemoryUsedPercentageAsString() {
         singleDouble = ((double) (getMemory().getVirtualMemory().getSwapUsed()) / (double) getMemory().getVirtualMemory().getSwapTotal()) * 100.0;
-        return String.format("%.2f%%", singleDouble);
+        singleDouble = singleDouble < 0 ? 0 : singleDouble;
+        return decimalFormat.format(singleDouble);
     }
 
     //--- DOUBLE 
     public static double getVirtualMemoryCapacityAsDouble() {
         singleString = getVirtualMemoryCapacityAsString();
-        singleString = singleString.substring(0, (singleString.length() - 3));
-        singleString = singleString.replace(',', '.');
-        return Double.parseDouble(singleString);
+
+        if (singleString.equalsIgnoreCase("0 bytes")) {
+            return 0.0;
+        } else {
+            singleString = singleString.substring(0, (singleString.length() - 3));
+            singleString = singleString.replace(',', '.');
+            return Double.parseDouble(singleString);
+        }
     }
 
     public static double getVirtualMemoryUsedAsDouble() {
         singleString = getVirtualMemoryUsedAsString();
-        singleString = singleString.substring(0, (singleString.length() - 3));
-        singleString = singleString.replace(',', '.');
-        return Double.parseDouble(singleString);
+        if (singleString.equalsIgnoreCase("0 bytes")) {
+            return 0.0;
+        } else {
+            singleString = singleString.substring(0, (singleString.length() - 3));
+            singleString = singleString.replace(',', '.');
+            return Double.parseDouble(singleString);
+        }
     }
 
     public static double getVirtualMemoryUsedPercentageAsDouble() {
         singleString = getVirtualMemoryUsedPercentageAsString();
-        singleString = singleString.substring(0, (singleString.length() - 1));
         singleString = singleString.replace(',', '.');
         return Double.parseDouble(singleString);
     }
@@ -426,9 +452,10 @@ public class SimpleSystemInfo {
         for (int count = 0; count < fsArray.length; count++) {
             if (fsArray[count].getTotalSpace() > 0) {
                 singleDouble = ((double) (fsArray[count].getTotalSpace() - fsArray[count].getUsableSpace()) / (double) fsArray[count].getTotalSpace()) * 100.0;
-                arrayString[count] = String.format("%.2f%%", singleDouble);
+                singleDouble = singleDouble < 0 ? 0 : singleDouble;
+                arrayString[count] = decimalFormat.format(singleDouble);
             } else {
-                arrayString[count] = String.format("%.2f%%", 0.0);
+                arrayString[count] = decimalFormat.format(0);
             }
         }
 
@@ -480,7 +507,6 @@ public class SimpleSystemInfo {
             if (arrayString[count].equalsIgnoreCase("NaN%")) {
                 arrayDoubleValues[count] = 0;
             } else {
-                singleString = arrayString[count].substring(0, (arrayString[count].length() - 1));
                 singleString = singleString.replace(',', '.');
                 arrayDoubleValues[count] = Double.parseDouble(singleString);
             }
@@ -508,9 +534,9 @@ public class SimpleSystemInfo {
         for (int count = 1; count < arrayString.length; count++) {
             arrayStringTable[count][0] = procs[count - 1].getName();
             arrayStringTable[count][1] = String.valueOf(procs[count - 1].getProcessID());
-            arrayStringTable[count][2] = String.format("%.2f%%", 100d * (procs[count - 1].getKernelTime() + procs[count - 1].getUserTime()) / procs[count - 1].getUpTime());
+            arrayStringTable[count][2] = decimalFormat.format( 100d * (procs[count - 1].getKernelTime() + procs[count - 1].getUserTime()) / procs[count - 1].getUpTime());
             arrayStringTable[count][3] = FormatUtil.formatBytes(procs[count - 1].getResidentSetSize());
-            arrayStringTable[count][4] = String.format("%.2f%%", 100d * procs[count - 1].getResidentSetSize() / getMemory().getTotal());
+            arrayStringTable[count][4] = decimalFormat.format( 100d * procs[count - 1].getResidentSetSize() / getMemory().getTotal());
         }
 
         return arrayStringTable;
@@ -526,9 +552,9 @@ public class SimpleSystemInfo {
         for (int count = 0; count < arrayString.length; count++) {
             arrayStringTable[count][0] = procs[count].getName();
             arrayStringTable[count][1] = String.valueOf(procs[count].getProcessID());
-            arrayStringTable[count][2] = String.format("%.2f%%", 100d * (procs[count].getKernelTime() + procs[count].getUserTime()) / procs[count].getUpTime());
+            arrayStringTable[count][2] = decimalFormat.format( 100d * (procs[count].getKernelTime() + procs[count].getUserTime()) / procs[count].getUpTime());
             arrayStringTable[count][3] = FormatUtil.formatBytes(procs[count].getResidentSetSize());
-            arrayStringTable[count][4] = String.format("%.2f%%", 100d * procs[count].getResidentSetSize() / getMemory().getTotal());
+            arrayStringTable[count][4] = decimalFormat.format( 100d * procs[count].getResidentSetSize() / getMemory().getTotal());
         }
 
         return arrayStringTable;
@@ -603,7 +629,7 @@ public class SimpleSystemInfo {
     //--- DOUBLE 
     public static double getNetworkInterfaceBytesReceivedAsDouble(int indexOfNetworkInterface) {
         singleString = getNetworkInterfaceBytesReceivedAsString(indexOfNetworkInterface);
-        
+
         if (singleString.equalsIgnoreCase("0 bytes")) {
             singleDouble = 0;
         } else {
@@ -614,10 +640,10 @@ public class SimpleSystemInfo {
 
         return singleDouble;
     }
-    
+
     public static double getNetworkInterfaceBytesSentAsDouble(int indexOfNetworkInterface) {
         singleString = getNetworkInterfaceBytesSentAsString(indexOfNetworkInterface);
-        
+
         if (singleString.equalsIgnoreCase("0 bytes")) {
             singleDouble = 0;
         } else {

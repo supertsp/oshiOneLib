@@ -547,8 +547,8 @@ public class SimpleSystemInfo {
         for (int count = 0; count < arrayString.length; count++) {
             if (arrayString[count].equalsIgnoreCase("NaN%")) {
                 arrayDoubleValues[count] = 0;
-            } else {
-                singleString = singleString.replace(',', '.');
+            } else {                
+                singleString = arrayString[count].replace(',', '.');
                 arrayDoubleValues[count] = Double.parseDouble(singleString);
             }
 

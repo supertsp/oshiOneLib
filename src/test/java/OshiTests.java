@@ -42,7 +42,7 @@ public class OshiTests {
 //                    SimpleSystemInfo.getVirtualMemoryUsedPercentageAsDouble()               + " \t "
 //                    +
 //                     SimpleSystemInfo.getDisksName()
-                     Arrays.toString(SimpleSystemInfo.getDisksFormatFileSystem())
+                     Arrays.toString(SimpleSystemInfo.getDisksUsedPercentageAsDouble())
                     + "\n"
             );
 

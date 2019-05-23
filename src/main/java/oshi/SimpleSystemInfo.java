@@ -634,7 +634,15 @@ public class SimpleSystemInfo {
     public static int getNetworkInterfaceLength() {
         return getNetwork().length;
     }
-
+    
+    public static String[] getNetworkInterfaceNames(){
+        arrayString = new String[getNetworkInterfaceLength()];
+        for (int count = 0; count < arrayString.length; count++) {
+            arrayString[count] = getNetworkInterfaceName(count);
+        }
+        return arrayString;
+    }
+    
     public static String getNetworkInterfaceName(int indexOfNetworkInterface) {
         return getNetwork()[indexOfNetworkInterface].getName();
     }

@@ -19,8 +19,8 @@ public class OshiTests {
 //            System.out.print(item + " | ");
 //        }
 //        System.out.println();
-        for (int i = 0; i < 10_000; i++) {
-//        for (int i = 0; i < 10; i++) {
+//        for (int i = 0; i < 10_000; i++) {
+        for (int i = 0; i < 3; i++) {
 //            System.out.println(
 //                    //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[0] + " " +
 //                    //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[1] + " " +
@@ -30,9 +30,9 @@ public class OshiTests {
 //            //                    SimpleSystemInfo.getVirtualMemoryUsedAsString() + " "
 //            );
 //
-            for (String[] item : SimpleSystemInfo.getProcessesAsStringTable()) {
-                System.out.println(item[0].substring(0, item[0].length() > 6 ? 6 : item[0].length()) + "\t\t" + item[1] + "\t\t" + item[2] + "\t\t" + item[3] + "\t\t" + item[4]);
-            }
+//            for (String[] item : SimpleSystemInfo.getProcessesAsStringTable()) {
+//                System.out.println(item[0].substring(0, item[0].length() > 6 ? 6 : item[0].length()) + "\t\t" + item[1] + "\t\t" + item[2] + "\t\t" + item[3] + "\t\t" + item[4]);
+//            }
 //            
 //            for (String[] item : SimpleSystemInfo.getProcessesWithHeaderAsStringTable()) {
 //                System.out.println(item[0].substring(0, item[0].length() > 6 ? 6 : item[0].length()) + "\t\t" + item[1] + "\t\t" + item[2] + "\t\t" + item[3] + "\t\t" + item[4]);
@@ -41,7 +41,9 @@ public class OshiTests {
             System.out.println(
 //                    SimpleSystemInfo.getVirtualMemoryUsedPercentageAsDouble()               + " \t "
 //                    +
-//                     Arrays.toString(Arrays.toString(SimpleSystemInfo.getProcessesWithHeaderAsStringTable()))
+//                     SimpleSystemInfo.getDisksName()
+                     Arrays.toString(SimpleSystemInfo.getDisksFormatFileSystem())
+                    + "\n"
             );
 
 

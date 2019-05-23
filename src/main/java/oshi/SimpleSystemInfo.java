@@ -101,8 +101,8 @@ public class SimpleSystemInfo {
     public static String getCurrentUserName() {
         return System.getenv("USERNAME");
     }
-    
-    public static PlatformEnum getPlatformOs(){
+
+    public static PlatformEnum getPlatformOs() {
         return SystemInfo.getCurrentPlatformEnum();
     }
     // </editor-fold>  
@@ -397,6 +397,10 @@ public class SimpleSystemInfo {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Disk Methods">
+    public static int getDisksNumber() {
+        return getDisks().length;
+    }
+
     public static String[] getDisksManufacturer() {
         arrayString = new String[getDisks().length];
         for (int count = 0; count < arrayString.length; count++) {
@@ -420,6 +424,39 @@ public class SimpleSystemInfo {
             }
 
         }
+        return arrayString;
+    }
+
+    public static String[] getDisksMountName() {
+        OSFileStore[] fsArray = getOs().getFileSystem().getFileStores();
+        arrayString = new String[fsArray.length];
+
+        for (int count = 0; count < fsArray.length; count++) {
+            arrayString[count] = fsArray[count].getMount();
+        }
+
+        return arrayString;
+    }
+
+    public static String[] getDisksType() {
+        OSFileStore[] fsArray = getOs().getFileSystem().getFileStores();
+        arrayString = new String[fsArray.length];
+
+        for (int count = 0; count < fsArray.length; count++) {
+            arrayString[count] = fsArray[count].getDescription();
+        }
+
+        return arrayString;
+    }
+    
+    public static String[] getDisksFormatFileSystem() {
+        OSFileStore[] fsArray = getOs().getFileSystem().getFileStores();
+        arrayString = new String[fsArray.length];
+
+        for (int count = 0; count < fsArray.length; count++) {
+            arrayString[count] = fsArray[count].getType();
+        }
+
         return arrayString;
     }
 
@@ -522,14 +559,14 @@ public class SimpleSystemInfo {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Processes Methods">
-    public static int getProcessesNumber(){
+    public static int getProcessesNumber() {
         return getOs().getProcessCount();
     }
-    
-    public static int getProcessesThreadNumber(){
+
+    public static int getProcessesThreadNumber() {
         return getOs().getThreadCount();
     }
-    
+
     public static String[][] getProcessesWithHeaderAsStringTable() {
         //order: [0] Name    [1] PID    [2] Using %CPU     [3] Using RAM    [4] Using %RAM 
         arrayStringTable = new String[getOs().getProcessCount() + 1][5];
@@ -546,9 +583,9 @@ public class SimpleSystemInfo {
         for (int count = 1; count < arrayString.length; count++) {
             arrayStringTable[count][0] = procs[count - 1].getName();
             arrayStringTable[count][1] = String.valueOf(procs[count - 1].getProcessID());
-            arrayStringTable[count][2] = decimalFormat.format( 100d * (procs[count - 1].getKernelTime() + procs[count - 1].getUserTime()) / procs[count - 1].getUpTime());
+            arrayStringTable[count][2] = decimalFormat.format(100d * (procs[count - 1].getKernelTime() + procs[count - 1].getUserTime()) / procs[count - 1].getUpTime());
             arrayStringTable[count][3] = FormatUtil.formatBytes(procs[count - 1].getResidentSetSize());
-            arrayStringTable[count][4] = decimalFormat.format( 100d * procs[count - 1].getResidentSetSize() / getMemory().getTotal());
+            arrayStringTable[count][4] = decimalFormat.format(100d * procs[count - 1].getResidentSetSize() / getMemory().getTotal());
         }
 
         return arrayStringTable;
@@ -564,9 +601,9 @@ public class SimpleSystemInfo {
         for (int count = 0; count < arrayString.length; count++) {
             arrayStringTable[count][0] = procs[count].getName();
             arrayStringTable[count][1] = String.valueOf(procs[count].getProcessID());
-            arrayStringTable[count][2] = decimalFormat.format( 100d * (procs[count].getKernelTime() + procs[count].getUserTime()) / procs[count].getUpTime());
+            arrayStringTable[count][2] = decimalFormat.format(100d * (procs[count].getKernelTime() + procs[count].getUserTime()) / procs[count].getUpTime());
             arrayStringTable[count][3] = FormatUtil.formatBytes(procs[count].getResidentSetSize());
-            arrayStringTable[count][4] = decimalFormat.format( 100d * procs[count].getResidentSetSize() / getMemory().getTotal());
+            arrayStringTable[count][4] = decimalFormat.format(100d * procs[count].getResidentSetSize() / getMemory().getTotal());
         }
 
         return arrayStringTable;

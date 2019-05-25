@@ -590,6 +590,30 @@ public class SimpleSystemInfo {
 
         return arrayStringTable;
     }
+    
+    public static String[][] getProcessesWithHeaderAsStringTable(int numberOfProcesses) {
+        //order: [0] Name    [1] PID    [2] Using %CPU     [3] Using RAM    [4] Using %RAM 
+        arrayStringTable = new String[numberOfProcesses + 1][5];
+        arrayString = new String[numberOfProcesses + 1];
+
+        arrayStringTable[0][0] = "Name";
+        arrayStringTable[0][1] = "PID";
+        arrayStringTable[0][2] = "Using %CPU";
+        arrayStringTable[0][3] = "Using RAM";
+        arrayStringTable[0][4] = "Using %RAM";
+
+        OSProcess[] procs = getProcesses();
+
+        for (int count = 1; count < arrayString.length; count++) {
+            arrayStringTable[count][0] = procs[count - 1].getName();
+            arrayStringTable[count][1] = String.valueOf(procs[count - 1].getProcessID());
+            arrayStringTable[count][2] = decimalFormat.format(100d * (procs[count - 1].getKernelTime() + procs[count - 1].getUserTime()) / procs[count - 1].getUpTime());
+            arrayStringTable[count][3] = FormatUtil.formatBytes(procs[count - 1].getResidentSetSize());
+            arrayStringTable[count][4] = decimalFormat.format(100d * procs[count - 1].getResidentSetSize() / getMemory().getTotal());
+        }
+
+        return arrayStringTable;
+    }
 
     public static String[][] getProcessesAsStringTable() {
         //order: [0] Name    [1] PID    [2] Using %CPU     [3] Using RAM    [4] Using %RAM 
@@ -597,6 +621,24 @@ public class SimpleSystemInfo {
         arrayString = new String[getOs().getProcessCount()];
 
         OSProcess[] procs = getProcesses();
+
+        for (int count = 0; count < arrayString.length; count++) {
+            arrayStringTable[count][0] = procs[count].getName();
+            arrayStringTable[count][1] = String.valueOf(procs[count].getProcessID());
+            arrayStringTable[count][2] = decimalFormat.format(100d * (procs[count].getKernelTime() + procs[count].getUserTime()) / procs[count].getUpTime());
+            arrayStringTable[count][3] = FormatUtil.formatBytes(procs[count].getResidentSetSize());
+            arrayStringTable[count][4] = decimalFormat.format(100d * procs[count].getResidentSetSize() / getMemory().getTotal());
+        }
+
+        return arrayStringTable;
+    }
+    
+    public static String[][] getProcessesAsStringTable(int numberOfProcesses) {
+        //order: [0] Name    [1] PID    [2] Using %CPU     [3] Using RAM    [4] Using %RAM 
+        arrayStringTable = new String[numberOfProcesses][5];
+        arrayString = new String[numberOfProcesses];
+
+        OSProcess[] procs = getProcesses(numberOfProcesses);
 
         for (int count = 0; count < arrayString.length; count++) {
             arrayStringTable[count][0] = procs[count].getName();
@@ -644,6 +686,7 @@ public class SimpleSystemInfo {
     }
     
     public static String getNetworkInterfaceName(int indexOfNetworkInterface) {
+        getNetwork()[indexOfNetworkInterface].updateAttributes();
         return getNetwork()[indexOfNetworkInterface].getName();
     }
 
@@ -656,14 +699,17 @@ public class SimpleSystemInfo {
     }
 
     public static String getNetworkInterfaceIp4(int indexOfNetworkInterface) {
+        getNetwork()[indexOfNetworkInterface].updateAttributes();
         return Arrays.toString(getNetwork()[indexOfNetworkInterface].getIPv4addr()).replace('[', ' ').replace(']', ' ').trim();
     }
 
     public static String getNetworkInterfaceIp6(int indexOfNetworkInterface) {
+        getNetwork()[indexOfNetworkInterface].updateAttributes();
         return Arrays.toString(getNetwork()[indexOfNetworkInterface].getIPv6addr()).replace('[', ' ').replace(']', ' ').trim();
     }
-
+        
     public static String getNetworkInterfaceBytesReceivedAsString(int indexOfNetworkInterface) {
+        getNetwork()[indexOfNetworkInterface].updateAttributes();
         boolean hasData
                 = getNetwork()[indexOfNetworkInterface].getBytesRecv() > 0
                 || getNetwork()[indexOfNetworkInterface].getBytesSent() > 0
@@ -674,6 +720,7 @@ public class SimpleSystemInfo {
     }
 
     public static String getNetworkInterfaceBytesSentAsString(int indexOfNetworkInterface) {
+        getNetwork()[indexOfNetworkInterface].updateAttributes();
         boolean hasData
                 = getNetwork()[indexOfNetworkInterface].getBytesRecv() > 0
                 || getNetwork()[indexOfNetworkInterface].getBytesSent() > 0

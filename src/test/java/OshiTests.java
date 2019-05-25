@@ -20,7 +20,7 @@ public class OshiTests {
 //        }
 //        System.out.println();
 //        for (int i = 0; i < 10_000; i++) {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
 //            System.out.println(
 //                    //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[0] + " " +
 //                    //                    SimpleSystemInfo.getCpuCoreCurrentFrequencyAsDouble()[1] + " " +
@@ -30,21 +30,21 @@ public class OshiTests {
 //            //                    SimpleSystemInfo.getVirtualMemoryUsedAsString() + " "
 //            );
 //
-//            for (String[] item : SimpleSystemInfo.getProcessesAsStringTable()) {
+//            for (String[] item : SimpleSystemInfo.getProcessesAsStringTable(10)) {
 //                System.out.println(item[0].substring(0, item[0].length() > 6 ? 6 : item[0].length()) + "\t\t" + item[1] + "\t\t" + item[2] + "\t\t" + item[3] + "\t\t" + item[4]);
 //            }
 //            
-//            for (String[] item : SimpleSystemInfo.getProcessesWithHeaderAsStringTable()) {
-//                System.out.println(item[0].substring(0, item[0].length() > 6 ? 6 : item[0].length()) + "\t\t" + item[1] + "\t\t" + item[2] + "\t\t" + item[3] + "\t\t" + item[4]);
-//            }
+            for (String[] item : SimpleSystemInfo.getProcessesWithHeaderAsStringTable(5)) {
+                System.out.println(item[0].substring(0, item[0].length() > 6 ? 6 : item[0].length()) + "\t\t" + item[1] + "\t\t" + item[2] + "\t\t" + item[3] + "\t\t" + item[4]);
+            }
 
-            System.out.println(
-//                    SimpleSystemInfo.getVirtualMemoryUsedPercentageAsDouble()               + " \t "
-//                    +
-//                     SimpleSystemInfo.getDisksName()
-                     Arrays.toString(SimpleSystemInfo.getNetworkInterfaceNames())
-                    + "\n"
-            );
+//            System.out.println(
+////                    SimpleSystemInfo.getVirtualMemoryUsedPercentageAsDouble()               + " \t "
+////                    +
+////                     SimpleSystemInfo.getDisksName()
+//                     Arrays.toString(SimpleSystemInfo.getNetworkInterfaceNames())
+//                    + "\n"
+//            );
 
 
 //            
